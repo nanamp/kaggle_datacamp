@@ -9,6 +9,8 @@
 
 library(broom)
 library(tidyverse)
+library(olsrr)
+
 swedish <- read.csv('SwedishMotor.csv')
 swedish
 
@@ -30,23 +32,55 @@ head(train)
 train <- select(train, Kilometres:Payment)
 head(train)
 
-# Explore the data 
-summary(train)
+# the response variables are numerical, so can use a linear model with least squares
+clm_mod <- lm(Claims ~ Insured + factor(Kilometres) + factor(Zone) + factor(Bonus), data = train)
+ols_step_both_p(clm_mod)
 
-# both response variables are continuous so we can potentially just use linear regression for both
-clm_lm <- lm(formula = Claims ~ Kilometres + Zone + Bonus + Make + Insured, data = train)
-tidy(clm_lm, conf.int = TRUE)
+plot(ols_step_both_p(clm_mod))
 
-# from output, seems the distance driven is not significant. p value > 5%. Confidence interval includes zero
-# refit without Kilometres
-clm_lm <- lm(formula = Claims ~ Zone + Bonus + Make + Insured, data = train)
-tidy(clm_lm, conf.int = TRUE)
+ols_step_best_subset(clm_mod)
 
-# let's find out if some of these variables are correlated.
-correlation <- cor(train)
-round(correlation, 2)
+ols_plot_resid_qq(clm_mod)
 
-# insured amount highly correlated with Claims and Payment
-# variables not really correlated with each other
+ols_step_both_aic(clm_mod, details = TRUE)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
