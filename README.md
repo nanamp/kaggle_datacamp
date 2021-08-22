@@ -1,2 +1,1 @@
-# kaggle
-kaggle exercises
+kaggle exercises and datacamp projectss
